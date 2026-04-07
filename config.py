@@ -2,8 +2,8 @@
 # configuration file for the mutual fund analyzer project.
 # It contains constants and settings
 
-TELEGRAM_BOT_TOKEN = "8548472739:AAGU39od72gMvno2jGVrq5bKaZe6rexWHaY"
-TELEGRAM_CHAT_ID = "1066562563"
+TELEGRAM_BOT_TOKEN = "1234567890:AAHkLz8qP4xyzABCDE_FakeTokenExample"
+TELEGRAM_CHAT_ID = "1234567890"
 
 MFAPI_BASE = "https://api.mfapi.in/mf"
 
