@@ -1,0 +1,81 @@
+To create your own Telegram Bot, you need a Telegram Bot Token and a Telegram Chat ID.
+
+Instructions to create your Telegram Bot Token
+
+Step 1: Open Telegram on phone or desktop and search for @BotFather
+
+This is Telegram’s official bot manager.
+
+Step 2: Start BotFather by typing:
+
+/start
+
+Step 3: Create a new bot by typing:
+
+/newbot
+
+BotFather will ask:
+
+Bot name → anything that you want e.g. MF Analyzer Bot
+
+Bot username → must end with bot e.g. mutual_funds_analyzer_bot
+
+Step 4: BotFather will reply with a Telegram Bot Token. Copy it. It looks something like this: 1234567890:AAHkLz8qP4xyzABCDE_FakeTokenExample
+
+
+Instructions to create your Telegram Chat ID
+
+Step 1: Open your bot
+
+Search for your bot username and click Start
+
+Step 2: Send any message
+
+Example:
+
+Hello World.
+
+Step 3: Get chat ID via browser
+
+Open this URL in your browser (replace with your token):
+
+https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates
+
+Step 4: Look for chat.id
+
+You’ll see JSON like this:
+
+{
+  "message": {
+    "chat": {
+      "id": 123456789,
+      "first_name": "your_first_name",
+      "type": "private"
+    }
+  }
+}
+
+That id number is your TELEGRAM_CHAT_ID
+
+
+A Quick test (strongly recommended):
+
+Step 1. Create a file test_telegram.py:
+
+from telegram import Bot
+import asyncio
+
+BOT_TOKEN = "YOUR_BOT_TOKEN"
+CHAT_ID = "YOUR_CHAT_ID"
+
+async def test():
+    bot = Bot(token=BOT_TOKEN)
+    await bot.send_message(chat_id=CHAT_ID, text="✅ Telegram bot working!")
+
+asyncio.run(test())
+
+Step 2. Activate your virtual environment and run this command in your terminal
+
+python test_telegram.py
+
+If you see the message → everything is wired correctly.
