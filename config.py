@@ -19,11 +19,11 @@ BENCHMARK_MAP = {
     "large cap": "147794",         # Motilal Oswal Nifty 50 Index Fund - Direct plan - Growth
     "mid cap": "147622",           # Motilal Oswal Nifty Midcap 150 Index Fund
     "small cap": "147623",         # Motilal Oswal Nifty smallcap 250 index fund direct
-    "flexi cap": "147794",         # fallback to Nifty 50
-    "multi cap": "147794",         # fallback to Nifty 50
+    "flexi cap": "147794",         # Motilal Oswal Nifty 50 Index Fund - Direct plan - Growth
+    "multi cap": "147794",         # Motilal Oswal Nifty 50 Index Fund - Direct plan - Growth
     "large and mid cap": "147704", # Motilal Oswal Large and Midcap Fund Direct Growth 
-    "index": "147794",             # fallback to Nifty 50
-    "elss": "147725",              # motilal oswal nifty 500 index fund - direct plan growth
+    "index": "147794",             # Motilal Oswal Nifty 50 Index Fund - Direct plan - Growth
+    "elss": "147725",              # Motilal Oswal Nifty 500 Index Fund - Direct Plan - Growth
     "debt": "120608",              # ICICI Prudential short term gilt fund - direct plan - growth
     "gilt": "120608",              # ICICI Prudential short term gilt fund - direct plan - growth
 }

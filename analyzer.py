@@ -9,6 +9,9 @@ from mf_data import fetch_nav_history
 # Approximate benchmark mapping using index funds
 
 def get_benchmark_code(fund_name):
+    '''
+    Get the benchmark scheme code for a given mutual fund name.
+    '''
     name = fund_name.lower()
 
     for key in BENCHMARK_MAP:
@@ -20,13 +23,21 @@ def get_benchmark_code(fund_name):
 
 
 def compute_returns(df):
+    '''
+    Compute daily returns for a given DataFrame containing NAV data.
+    '''
     df = df.copy()
-    df["returns"] = df["nav"].pct_change()
+    df["returns"] = df["nav"].pct_change() # Compute daily returns
     return df.dropna()
 
 
 def analyze_fund(df, fund_name):
+    '''
+    Analyze a mutual fund's performance based on its NAV history
+    and compare it to its benchmark. REturn its metrics.
+    '''
     cutoff = datetime.now() - relativedelta(months=LOOKBACK_MONTHS)
+
     df = df[df["date"] >= cutoff]
 
     if len(df) < 10:
@@ -81,14 +92,6 @@ def analyze_fund(df, fund_name):
         - (RISK_FREE_RATE + beta * (bench_return_annual - RISK_FREE_RATE))
     )
 
-    # ---- Status logic ----
-    if total_return >= GOOD_RETURN:
-        status = "🟢 GOOD"
-    elif total_return <= BAD_RETURN:
-        status = "🔴 BAD"
-    else:
-        status = "🟡 OK"
-
     return {
         "return_pct": round(total_return * 100, 2),
         "volatility": round(vol * 100, 2),
@@ -96,5 +99,6 @@ def analyze_fund(df, fund_name):
         "sortino": round(sortino, 2),
         "beta": round(beta, 2),
         "alpha": round(alpha * 100, 2),
-        "status": status,
+        "fund_return": round(fund_returns.mean() * 252 * 100, 2),
+        "benchmark_return": round(bench_returns.mean() * 252 * 100, 2)
     }
