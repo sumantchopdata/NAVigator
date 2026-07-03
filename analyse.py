@@ -1,35 +1,11 @@
 # analyzer.py
 # This module contains the core logic for analyzing mutual fund performance based on historical NAV data.
+
 import numpy as np
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from config import LOOKBACK_MONTHS, GOOD_RETURN, BAD_RETURN, RISK_FREE_RATE, BENCHMARK_MAP
-from mf_data import fetch_nav_history
-
-# Approximate benchmark mapping using index funds
-
-def get_benchmark_code(fund_name):
-    '''
-    Get the benchmark scheme code for a given mutual fund name.
-    '''
-    name = fund_name.lower()
-
-    for key in BENCHMARK_MAP:
-        if key in name:
-            return BENCHMARK_MAP[key]
-
-    # default fallback
-    return "147794" # Nifty 50 index fund
-
-
-def compute_returns(df):
-    '''
-    Compute daily returns for a given DataFrame containing NAV data.
-    '''
-    df = df.copy()
-    df["returns"] = df["nav"].pct_change() # Compute daily returns
-    return df.dropna()
-
+from config import LOOKBACK_MONTHS, RISK_FREE_RATE
+from utilities import fetch_nav_history, compute_returns, get_benchmark_code
 
 def analyze_fund(df, fund_name):
     '''
@@ -91,14 +67,17 @@ def analyze_fund(df, fund_name):
         (fund_returns.mean() * 252)
         - (RISK_FREE_RATE + beta * (bench_return_annual - RISK_FREE_RATE))
     )
+    annualized_return = (
+        (df["nav"].iloc[-1] / df["nav"].iloc[0]) ** (252 / len(df))
+        ) - 1
 
     return {
-        "return_pct": round(total_return * 100, 2),
-        "volatility": round(vol * 100, 2),
-        "sharpe": round(sharpe, 2),
-        "sortino": round(sortino, 2),
-        "beta": round(beta, 2),
-        "alpha": round(alpha * 100, 2),
-        "fund_return": round(fund_returns.mean() * 252 * 100, 2),
-        "benchmark_return": round(bench_returns.mean() * 252 * 100, 2)
+        "return_pct": round(total_return * 100, 2),                     # return from beginning to end in percentage
+        "volatility": round(vol * 100, 2),                              # annualized standard deviation of returns
+        "sharpe": round(sharpe, 2),                                     # risk-adjusted return metric (Sharpe Ratio)
+        "sortino": round(sortino, 2),                                   # risk-adjusted return metric focusing on downside risk (Sortino Ratio)
+        "beta": round(beta, 2),                                         # measure of the fund's volatility relative to its benchmark
+        "alpha": round(alpha * 100, 2),                                 # measure of the fund's performance relative to its expected return based on its beta
+        "annualized_return": round(annualized_return * 100, 2),         # annualized return of the fund
+        "benchmark_return": round(bench_returns.mean() * 252 * 100, 2)  # average annual return of the benchmark
     }

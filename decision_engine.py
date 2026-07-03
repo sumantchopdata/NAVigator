@@ -9,7 +9,7 @@ metrics = {
     "beta": 0.95,
     "volatility": 15.3,
     "benchmark_return": 14.2,
-    "fund_return": 16.8
+    "annualized_return": 16.8
 }
 
 The output looks like a dictionary of the form:
@@ -36,7 +36,7 @@ It is based on six explainable rules:
 Rule 1: alpha > 0 => passed, else failed
 Rule 2: sharpe > 1 => passed, else failed
 Rule 3: sortino > 1 => passed, else failed
-Rule 4: Fund Return > Benchmark Return
+Rule 4: Annualized Return > Benchmark Return
 Rule 5: 0.8 <= beta <= 1.2, Outside this range: Warning (not failure)
 Rule 6: volatility < 15% => passed, else warning
 '''
@@ -62,8 +62,8 @@ def sortino_rule(sortino):
         return "failed"
 
 
-def benchmark_rule(fund_return, benchmark_return):
-    if fund_return >= benchmark_return:
+def benchmark_rule(annualized_return, benchmark_return):
+    if annualized_return >= benchmark_return:
         return "passed"
     else:
         return "failed"
@@ -97,7 +97,7 @@ def count_results(metrics):
         "alpha": alpha_rule(metrics["alpha"]),
         "sharpe": sharpe_rule(metrics["sharpe"]),
         "sortino": sortino_rule(metrics["sortino"]),
-        "benchmark": benchmark_rule(metrics["fund_return"],
+        "benchmark": benchmark_rule(metrics["annualized_return"],
                                     metrics["benchmark_return"]),
         "beta": beta_rule(metrics["beta"]),
         "volatility": volatility_rule(metrics["volatility"])

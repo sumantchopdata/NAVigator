@@ -5,6 +5,9 @@ import time
 import requests
 import pandas as pd
 
+from config import BENCHMARK_MAP
+
+
 def search_scheme(query):
     '''
     Search for mutual fund schemes based on a query string.
@@ -17,11 +20,12 @@ def search_scheme(query):
 
     return results[:3]  # top 3
 
+
 def fetch_nav_history(scheme_code, max_retries=3):
-    """
+    '''
     Fetch NAV history for a given mutual fund scheme code.
     Retries automatically if the API is temporarily slow.
-    """
+    '''
 
     url = f"https://api.mfapi.in/mf/{scheme_code}"
 
@@ -46,3 +50,26 @@ def fetch_nav_history(scheme_code, max_retries=3):
             raise Exception(f"Error fetching NAV history: {e}")
 
     raise Exception("MFAPI is currently unavailable. Please try again later.")
+
+# Approximate benchmark mapping using index funds
+def get_benchmark_code(fund_name):
+    '''
+    Get the benchmark scheme code for a given mutual fund name.
+    '''
+    name = fund_name.lower()
+
+    for key in BENCHMARK_MAP:
+        if key in name:
+            return BENCHMARK_MAP[key]
+
+    # default fallback
+    return "147794" # Nifty 50 index fund
+
+
+def compute_returns(df):
+    '''
+    Compute daily returns for a given DataFrame containing NAV data.
+    '''
+    df = df.copy()
+    df["returns"] = df["nav"].pct_change() # Compute daily returns
+    return df.dropna()

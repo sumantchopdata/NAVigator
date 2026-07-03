@@ -6,8 +6,8 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
 
 from scheme_lookup import search_scheme
-from mf_data import fetch_nav_history
-from analyzer import analyze_fund
+from utilities import fetch_nav_history
+from analyse import analyze_fund
 from config import TELEGRAM_BOT_TOKEN
 
 
