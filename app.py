@@ -12,7 +12,7 @@ st.write("Mutual Fund Analysis and Recommendation Tool")
 schemes_df = load_scheme_list()
 
 selected_scheme = st.selectbox(
-    "Select Mutual Fund",
+    "Search for a Mutual Fund or select from the list below:",
     options=[None] + schemes_df["scheme_name"].tolist(),
     index=0,
     placeholder="Choose a mutual fund..."
