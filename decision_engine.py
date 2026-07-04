@@ -33,15 +33,15 @@ RULES = [
     {
         "name": "sharpe",
         "check": lambda m: m["sharpe"] > 1,
-        "pass": "sharpe is positive.",
-        "fail": "sharpe is not positive.",
+        "pass": "sharpe is above 1.",
+        "fail": "sharpe is not above 1.",
         "type": "failure"
     },
     {
         "name": "sortino",
         "check": lambda m: m["sortino"] > 1,
-        "pass": "sortino is positive.",
-        "fail": "sortino is not positive.",
+        "pass": "sortino is above 1.",
+        "fail": "sortino is not above 1.",
         "type": "failure"
     },
     {
