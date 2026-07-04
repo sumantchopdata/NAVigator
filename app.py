@@ -6,19 +6,24 @@ from decision_engine import evaluate_rules
 from utilities import fetch_nav_history
 from parse_amfi_list import load_scheme_list
 
-st.title("NAVigator")
-st.write("Mutual Fund Analysis and Recommendation Tool")
+st.title("💹NAVigator")
+st.write("📈Mutual Fund Analysis and Recommendation Tool")
 
 schemes_df = load_scheme_list()
 
 selected_scheme = st.selectbox(
-    "Search for a Mutual Fund or select from the list below:",
+    "🔍Search for a Mutual Fund or select from the list below:",
     options=[None] + schemes_df["scheme_name"].tolist(),
     index=0,
     placeholder="Choose a mutual fund..."
 )
 
-if st.button("Analyze Fund"):
+st.write('This tool uses the mfapi.in API to fetch historical NAV data for mutual funds and analyze their performance based on various metrics.')
+st.write('Data accuracy depends on source availability.')
+
+st.write('⚠️ Disclaimer: This tool is for educational purposes only and should not be considered financial advice.')
+
+if st.button("⚙️ Analyze Fund"):
     if selected_scheme is not None:
         
         scheme_code = schemes_df.loc[
@@ -59,11 +64,11 @@ if st.button("Analyze Fund"):
         st.header("Recommendation")
 
         if final_results["recommendation"] == "HOLD":
-            st.success("Recommendation: HOLD")
+            st.success("✅ Recommendation: HOLD")
         elif final_results["recommendation"] == "WATCH":
-            st.warning("Recommendation: WATCH")
+            st.warning("⚠️ Recommendation: WATCH")
         elif final_results["recommendation"] == "REVIEW":
-            st.error("Recommendation: REVIEW")
+            st.error("❌ Recommendation: REVIEW")
         
         st.write("Recommendation based on the following results:")
 
