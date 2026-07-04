@@ -17,7 +17,7 @@ It is based on six explainable rules:
 Rule 1: alpha > 0 => passed, else failed
 Rule 2: sharpe > 1 => passed, else failed
 Rule 3: sortino > 1 => passed, else failed
-Rule 4: Annualized Return > Benchmark Return
+Rule 4: Annualized Return >= Benchmark Return
 Rule 5: 0.8 <= beta <= 1.2, Outside this range: Warning (not failure)
 Rule 6: volatility < 15% => passed, else warning
 '''
@@ -60,7 +60,7 @@ RULES = [
     },
     {
         "name": "volatility",
-        "check": lambda m: m["volatility"] < 0.15,
+        "check": lambda m: m["volatility"] < 15,
         "pass": "volatility less than 15%",
         "fail": "volatility greater than or equal to 15%",
         "type": "warning"

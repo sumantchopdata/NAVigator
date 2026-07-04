@@ -43,14 +43,14 @@ if st.button("Analyze Fund"):
 
         with col1:
             st.header("Performance Metrics")
-            st.write('Alpha: {:.2%}'.format(metrics['alpha']))
-            st.write('Basic Return: {:.2%}'.format(metrics['return_pct']))
-            st.write('Annualized Return: {:.2%}'.format(metrics['annualized_return']))
+            st.write('Alpha: {:.2f}%'.format(metrics['alpha']))
+            st.write('Basic Return: {:.2f}%'.format(metrics['return_pct']))
+            st.write('Annualized Return: {:.2f}%'.format(metrics['annualized_return']))
 
         with col2:
             st.header("Risk Metrics")
             st.write('Beta: {:.2f}'.format(metrics['beta']))
-            st.write('Volatility: {:.2%}'.format(metrics['volatility']))
+            st.write('Volatility: {:.2f}%'.format(metrics['volatility']))
             st.write('Sharpe Ratio: {:.2f}'.format(metrics['sharpe']))
             st.write('Sortino Ratio: {:.2f}'.format(metrics['sortino']))        
 

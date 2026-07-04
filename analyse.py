@@ -53,9 +53,7 @@ def analyse_fund(df, fund_name):
     downside = fund_returns[fund_returns < 0]
     downside_std = downside.std() * np.sqrt(252)
 
-    sortino = (
-        excess_return / downside_std if downside_std != 0 else 0
-    )
+    sortino = excess_return / downside_std if downside_std != 0 else 0
 
     # ---- Beta ----
     covariance = np.cov(fund_returns, bench_returns)[0][1]
