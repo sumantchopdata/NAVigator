@@ -1,13 +1,14 @@
 # parse amfi_nav.txt and return a dataframe with scheme_code and scheme_name
 #%%
 import pandas as pd
-from tqdm import tqdm
+import streamlit as st
 
+@st.cache_data
 def load_scheme_list(path="data/amfi_nav.txt"):
 
     rows = []
     with open(path, encoding="utf-8") as f:
-        for line in tqdm(f, desc="Loading scheme list"):
+        for line in f:
             parts = line.strip().split(";")
             if len(parts) >= 5 and parts[0].isdigit():
                 rows.append({

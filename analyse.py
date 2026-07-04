@@ -6,7 +6,9 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from config import LOOKBACK_MONTHS, RISK_FREE_RATE
 from utilities import fetch_nav_history, compute_returns, get_benchmark_code
+import streamlit as st
 
+@st.cache_data
 def analyze_fund(df, fund_name):
     '''
     Analyze a mutual fund's performance based on its NAV history
