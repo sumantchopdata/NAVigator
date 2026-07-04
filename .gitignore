@@ -1,1 +1,3 @@
 venv_nav/ 
+.devcontainer/
+__pycache__/
