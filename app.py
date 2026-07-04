@@ -67,6 +67,7 @@ if st.button("Analyze Fund"):
         
         st.write("Recommendation based on the following results:")
 
+        col1, col2 = st.columns(2)
         with col1:
             st.write("Passed Rules:")
             if final_results["passed"]:

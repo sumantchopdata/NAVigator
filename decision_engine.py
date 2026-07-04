@@ -60,7 +60,7 @@ RULES = [
     },
     {
         "name": "volatility",
-        "check": lambda m: m["volatility"] < 15,
+        "check": lambda m: m["volatility"] < 0.15,
         "pass": "volatility less than 15%",
         "fail": "volatility greater than or equal to 15%",
         "type": "warning"
