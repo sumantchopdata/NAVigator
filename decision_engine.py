@@ -1,4 +1,4 @@
-# Decision Engine for the MF Analyzer
+# Decision Engine for the NAVigator
 
 '''
 The input looks like a dictionary of the form:
@@ -12,25 +12,6 @@ metrics = {
     "annualized_return": 16.8
 }
 
-The output looks like a dictionary of the form:
-{
-    "recommendation": "HOLD",
-
-    "passed": [
-        "Positive alpha",
-        "Sharpe ratio above 1",
-        "Outperformed benchmark"
-    ],
-
-    "warnings": [
-        "Slightly high volatility"
-    ],
-
-    "failed": [
-        "Beta above preferred range"
-    ]
-}
-
 It is based on six explainable rules:
 
 Rule 1: alpha > 0 => passed, else failed
@@ -41,100 +22,83 @@ Rule 5: 0.8 <= beta <= 1.2, Outside this range: Warning (not failure)
 Rule 6: volatility < 15% => passed, else warning
 '''
 
-def alpha_rule(alpha):
-    if alpha > 0:
-        return "passed"
-    else:
-        return "failed"
-    
+RULES = [
+    {
+        "name": "alpha",
+        "check": lambda m: m["alpha"] > 0,
+        "pass": "alpha is positive.",
+        "fail": "alpha is not positive.",
+        "type": "failure"
+    },
+    {
+        "name": "sharpe",
+        "check": lambda m: m["sharpe"] > 1,
+        "pass": "sharpe is positive.",
+        "fail": "sharpe is not positive.",
+        "type": "failure"
+    },
+    {
+        "name": "sortino",
+        "check": lambda m: m["sortino"] > 1,
+        "pass": "sortino is positive.",
+        "fail": "sortino is not positive.",
+        "type": "failure"
+    },
+    {
+        "name": "benchmark",
+        "check": lambda m: m["annualized_return"] >= m["benchmark_return"],
+        "pass": "annualized_return >= benchmark_return",
+        "fail": "annualized_return < benchmark_return",
+        "type": "failure"
+    },
+    {
+        "name": "beta",
+        "check": lambda m: 0.8 <= m["beta"] <= 1.2,
+        "pass": "beta within preferred range (0.8 - 1.2).",
+        "fail": "beta outside preferred range (0.8 - 1.2).",
+        "type": "warning"
+    },
+    {
+        "name": "volatility",
+        "check": lambda m: m["volatility"] < 15,
+        "pass": "volatility less than 15%",
+        "fail": "volatility greater than or equal to 15%",
+        "type": "warning"
+    }
+]
 
-def sharpe_rule(sharpe):
-    if sharpe > 1:
-        return "passed"
-    else:
-        return "failed"
-    
 
-def sortino_rule(sortino):
-    if sortino > 1:
-        return "passed"
-    else:
-        return "failed"
-
-
-def benchmark_rule(annualized_return, benchmark_return):
-    if annualized_return >= benchmark_return:
-        return "passed"
-    else:
-        return "failed"
-
-
-def beta_rule(beta):
-    if 0.8 <= beta <= 1.2:
-        return "passed"
-    else:
-        return "warning"
-
-
-def volatility_rule(volatility):
-    if volatility < 15:
-        return "passed"
-    else:
-        return "warning"
-
-
-def count_results(metrics):
+def evaluate_rules(metrics):
     results = {
-        "risk": None,
-        "recommendation": None,
         "passed": [],
+        "failed": [],
         "warnings": [],
-        "failed": []
     }
 
-    # Evaluate each rule
-    rules = {
-        "alpha": alpha_rule(metrics["alpha"]),
-        "sharpe": sharpe_rule(metrics["sharpe"]),
-        "sortino": sortino_rule(metrics["sortino"]),
-        "benchmark": benchmark_rule(metrics["annualized_return"],
-                                    metrics["benchmark_return"]),
-        "beta": beta_rule(metrics["beta"]),
-        "volatility": volatility_rule(metrics["volatility"])
-    }
+    for rule in RULES:
+        if rule["check"](metrics):
+            results["passed"].append(rule["pass"])
+        else:
+            if rule["type"] == "failure":
+                results["failed"].append(rule["fail"])
+            else:
+                results["warnings"].append(rule["fail"])
 
-    # Populate results based on rule evaluations
-    for rule, result in rules.items():
-        if result == "passed":
-            results["passed"].append(f"{rule} passed")
-        elif result == "failed":
-            results["failed"].append(f"{rule} failed")
-        elif result == "warning":
-            results["warnings"].append(f"{rule} warning")
-
-    return results
-
-def determine_recommendation(results):
-
-    # Determine overall recommendation
-    if len(results["failed"]) == 0:
+    # Recommendation
+    failures = len(results["failed"])
+    if failures == 0:
         results["recommendation"] = "HOLD"
-    elif len(results["failed"]) == 1:
+    elif failures == 1:
         results["recommendation"] = "WATCH"
-    elif len(results["failed"]) >= 1:
+    else:
         results["recommendation"] = "REVIEW"
 
-    return results
-
-def determine_risk(results):
-
-    # Determine risk level based on warnings
-    if len(results["warnings"]) == 0:
+    # Risk
+    warnings = len(results["warnings"])
+    if warnings == 0:
         results["risk"] = "LOW"
-
-    elif len(results["warnings"]) == 1:
+    elif warnings == 1:
         results["risk"] = "MEDIUM"
-
     else:
         results["risk"] = "HIGH"
 

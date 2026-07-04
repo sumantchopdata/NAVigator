@@ -9,7 +9,7 @@ from utilities import fetch_nav_history, compute_returns, get_benchmark_code
 import streamlit as st
 
 @st.cache_data
-def analyze_fund(df, fund_name):
+def analyse_fund(df, fund_name):
     '''
     Analyze a mutual fund's performance based on its NAV history
     and compare it to its benchmark. REturn its metrics.

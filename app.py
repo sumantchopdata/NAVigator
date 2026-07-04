@@ -1,8 +1,8 @@
 # streamlit app 
 
 import streamlit as st
-from analyse import analyze_fund
-from decision_engine import count_results, determine_recommendation, determine_risk
+from analyse import analyse_fund
+from decision_engine import evaluate_rules
 from utilities import fetch_nav_history
 from parse_amfi_list import load_scheme_list
 
@@ -31,10 +31,11 @@ if st.button("Analyze Fund"):
         st.success("NAV history fetched successfully!")
 
         # print that df is fetched and show the date range
-        st.write(f"Fetched NAV history for {selected_scheme} from {df['date'].min()} to {df['date'].max()}")
+        txt = f"Fetched NAV history for {selected_scheme} from {df['date'].min()} to {df['date'].max()}."
+        st.write(txt)
         st.write(f"Total records: {len(df)}")
 
-        metrics = analyze_fund(df, selected_scheme)
+        metrics = analyse_fund(df, selected_scheme)
 
         st.header(f"Fund Metrics obtained for {selected_scheme}:")
         
@@ -53,9 +54,7 @@ if st.button("Analyze Fund"):
             st.write('Sharpe Ratio: {:.2f}'.format(metrics['sharpe']))
             st.write('Sortino Ratio: {:.2f}'.format(metrics['sortino']))        
 
-        results = count_results(metrics)
-        results = determine_recommendation(results)
-        final_results = determine_risk(results)
+        final_results = evaluate_rules(metrics)
 
         st.header("Recommendation")
 
@@ -67,14 +66,24 @@ if st.button("Analyze Fund"):
             st.error("Recommendation: REVIEW")
         
         st.write("Recommendation based on the following results:")
-        st.write("Passed Rules:")
-        for rule in final_results["passed"]:
-            st.write(f"- {rule}")
 
-        st.write("Failed Rules:")
-        for rule in final_results["failed"]:
-            st.write(f"- {rule}")
+        with col1:
+            st.write("Passed Rules:")
+            if final_results["passed"]:
+                for rule in final_results["passed"]:
+                    st.write(f"- {rule}")
+            else:
+                st.write("No rules passed.")
 
+        with col2:
+            st.write("Failed Rules:")
+            if final_results["failed"]:
+                for rule in final_results["failed"]:
+                    st.write(f"- {rule}")
+            else:
+                st.write("No rules failed.")
+
+        
         st.header("Risk Assessment")
 
         if final_results['risk'] == 'LOW':
@@ -85,5 +94,8 @@ if st.button("Analyze Fund"):
             st.error('Risk Level: HIGH')
 
         st.write("Risk assessment based on the following warnings:")
-        for rule in final_results["warnings"]:
-            st.write(f"- {rule}")
+        if final_results["warnings"]:
+            for rule in final_results["warnings"]:
+                st.write(f"- {rule}")
+        else:
+            st.write("No warnings.")
